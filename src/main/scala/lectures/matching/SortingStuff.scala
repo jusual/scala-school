@@ -67,30 +67,31 @@ object SortingStuff extends App {
                       boots: List[Boots] = Nil,
                       junk: List[Stuff] = Nil)
 
-   def sortJunk(stuff: List[Stuff]): StuffBox = ??? ///sort(stuff, StuffBox())
-  // // Замените знаки вопроса подходящим кодом
-  // // Поправьте логику метода
-  //  private def sort(stuff: List[Stuff], stuffBox: StuffBox): StuffBox = ??? {
-  //    case _ => stuffBox
-  //    case ??? =>
-  //      val newBox = putStuffInRightBox(item, stuffBox)
-  //      sort(rest, newBox)
-  //
-  //  }
-  //  // Метод должен положить вещь в правильную коробку
-  //  private def putStuffInRightBox(item: Stuff, stuffBox: StuffBox) = ??? {
-  //    case ??? => stuffBox.copy(watches = it :: stuffBox.watches)
-  //    case junk@_ => stuffBox.copy(junk = junk :: stuffBox.junk)
-  //    case ??? => stuffBox.copy(boots = it :: stuffBox.boots)
-  //  }
-  //
-  //  def findMyKnife(stuffBox: StuffBox): Boolean = stuffBox match {
-  //    case ??? if junk.contains(Knife) => true
-  //    case _ => false
-  //  }
+    def sortJunk(stuff: List[Stuff]): StuffBox = sort(stuff, StuffBox())
+    // Замените знаки вопроса подходящим кодом
+    // Поправьте логику метода
+    private def sort(stuff: List[Stuff], stuffBox: StuffBox): StuffBox = stuff match {
+      case item::rest =>
+        val newBox = putStuffInRightBox(item, stuffBox)
+        sort(rest, newBox)
+      case _ => stuffBox
+    }
 
-  // //вместо вопросов подставьте композицию функций  sortJunk и findMyKnife
-  // val knifeIsInJunk = (???) (stuff)
+    // Метод должен положить вещь в правильную коробку
+    private def putStuffInRightBox(item: Stuff, stuffBox: StuffBox) = item match {
+      case watches@Watches(_, cost) if cost > 1000 => stuffBox.copy(watches = watches :: stuffBox.watches)
+      case book@Book(_, true) => stuffBox.copy(books = book :: stuffBox.books)
+      case boots@Boots(brand, _) if brand == "Converse" || brand == "Adidas" => stuffBox.copy(boots = boots :: stuffBox.boots)
+      case junk@_ => stuffBox.copy(junk = junk :: stuffBox.junk)
+    }
 
-  //print(s"Is knife in a junk? - $knifeIsInJunk")
+    def findMyKnife(stuffBox: StuffBox): Boolean = stuffBox match {
+      case StuffBox(_, _, _, junk) if junk.contains(Knife) => true
+      case _ => false
+    }
+
+    //вместо вопросов подставьте композицию функций  sortJunk и findMyKnife
+    val knifeIsInJunk = (findMyKnife _ compose sortJunk) (stuff)
+
+  print(s"Is knife in a junk? - $knifeIsInJunk")
 }
