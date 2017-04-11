@@ -37,7 +37,7 @@ object Competition extends App {
     }
 
     var finalResult = 0
-    for(r <- results) {
+    for (r <- results) {
       if (r._2 > 0) finalResult = finalResult + 1
       else if (r._2 < 0) finalResult = finalResult - 1
     }
